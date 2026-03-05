@@ -1,0 +1,451 @@
+{
+  "name": "Sponsorship Form",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Sponsorship Form",
+        "formDescription": "Sponsorship Form for Cricket Team in Mars",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Company Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Contact Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Contact Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Notes",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9724b3a6-154a-46f0-96a9-5be2a7fd69f1",
+      "name": "On form submission",
+      "webhookId": "96374e49-d60b-4fca-9283-a606927e27ec"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Budget }}",
+                    "rightValue": 500000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "51d1b6cf-1df4-46f2-9c33-5c60d3f879a1"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Declined"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7c73f040-f0d7-4803-85f2-4bf7036d2c93",
+                    "leftValue": "={{ $json.Budget }}",
+                    "rightValue": 500000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Approve"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b3b2e57f-1295-4884-a1c0-e6cd9f463e24",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1JMdI7SC6FeVb2KcZG0qbZ4nVHpJVVE7YHT0pspGL1Ps/edit?pli=1&gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JMdI7SC6FeVb2KcZG0qbZ4nVHpJVVE7YHT0pspGL1Ps/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $('On form submission').item.json['Company Name'] }}",
+            "Contact Name ": "={{ $('On form submission').item.json['Contact Name'] }}",
+            "Contact Email": "={{ $('On form submission').item.json['Contact Email'] }}",
+            "Budget": "={{ $('On form submission').item.json.Budget }}",
+            "Notes": "={{ $('On form submission').item.json.Notes }}",
+            "Submitted At": "={{ $('On form submission').item.json.submittedAt }}",
+            "Decision": "follow up sent"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name ",
+              "displayName": "Contact Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        96
+      ],
+      "id": "651d17df-e262-4365-9b78-d9e78c5701cd",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "aXdHaeMInsv9QWhS",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1JMdI7SC6FeVb2KcZG0qbZ4nVHpJVVE7YHT0pspGL1Ps/edit?pli=1&gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JMdI7SC6FeVb2KcZG0qbZ4nVHpJVVE7YHT0pspGL1Ps/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company Name": "={{ $('On form submission').item.json['Company Name'] }}",
+            "Contact Name ": "={{ $('On form submission').item.json['Contact Name'] }}",
+            "Contact Email": "={{ $('On form submission').item.json['Contact Email'] }}",
+            "Budget": "={{ $('On form submission').item.json.Budget }}",
+            "Notes": "={{ $('On form submission').item.json.Notes }}",
+            "Submitted At": "={{ $('On form submission').item.json.submittedAt }}",
+            "Decision": "Declined"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Name ",
+              "displayName": "Contact Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -80
+      ],
+      "id": "a6e1539e-bc5b-454d-9fad-4bfdc69bf69f",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "aXdHaeMInsv9QWhS",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Contact Email'] }}",
+        "subject": "=Hello  {{ $('On form submission').item.json['Company Name'] }}",
+        "emailType": "text",
+        "message": "=Dear  {{ $('On form submission').item.json['Contact Name'] }}, thanks for contacting us. The minimum amount for sponsorship was $500000 USD. Please let us know if you are comfortable with that.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        -80
+      ],
+      "id": "eb1f7851-c209-4d43-a47d-2560d01e82d3",
+      "name": "Send a Decline Message",
+      "webhookId": "fd4b4e92-447f-44bc-9a24-a6d0291be80e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lPkMGkxbtnUXstBK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Contact Email'] }}",
+        "subject": "=Hello  {{ $('On form submission').item.json['Company Name'] }}",
+        "emailType": "text",
+        "message": "=Dear  {{ $('On form submission').item.json['Contact Name'] }}, thanks for contacting us. Let's connect via Google meet to discuss further.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        96
+      ],
+      "id": "2d90e1d4-e4df-4d48-89f4-347600d54d8c",
+      "name": "Send approval message",
+      "webhookId": "fd4b4e92-447f-44bc-9a24-a6d0291be80e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "lPkMGkxbtnUXstBK",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a Decline Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send approval message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a Decline Message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send approval message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "65857648-f4de-4360-91b7-bc5837c57aa1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0f3e22d23453394d6ff9892c072af3968471113b5e880608bac9d4e79cd2ff22"
+  },
+  "id": "LqWjrz580rYcabrv",
+  "tags": []
+}
